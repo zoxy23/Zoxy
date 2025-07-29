@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tool Tích Hợp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .tool-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tool-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-section {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        /* Tool-specific styles */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .calculator-card, .tool-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .calculator-card:hover, .tool-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            color: #2d3748;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-btn, .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .calculate-btn:hover, .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .result {
+            background: #f0f8ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        .result-label {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        /* BMI specific styles */
+        .bmi-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .unit-toggle {
+            display: flex;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .unit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #4a5568;
+        }
+
+        .unit-btn.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .bmi-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .bmi-category {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+
+        /* Todo specific styles */
+        .todo-main {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+        }
+
+        .todo-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            height: fit-content;
+        }
+
+        .add-todo-form {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .todo-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .todo-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .todo-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .todo-item.completed {
+            opacity: 0.7;
+            border-left-color: #48bb78;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #718096;
+        }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .todo-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .todo-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .complete-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #4299e1;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #f56565;
+            color: white;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            color: #4a5568;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                justify-content: center;
+            }
+
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 0.8rem;
+            }
+
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .todo-main {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🛠️ Hệ Thống Tool Tích Hợp</div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" onclick="showSection('welcome')">🏠 Trang Chủ</button>
+                <button class="nav-btn" onclick="showSection('tax-calculator')">💰 Thuế & Lãi Suất</button>
+                <button class="nav-btn" onclick="showSection('bmi-calculator')">⚖️ BMI</button>
+                <button class="nav-btn" onclick="showSection('todo-manager')">📝 Quản Lý CV</button>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <div id="welcome" class="tool-section active">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Chào Mừng Đến Với Hệ Thống Tool Tích Hợp</h1>
+                <p class="welcome-subtitle">Tất cả công cụ hữu ích trong một nơi - Tiện lợi, nhanh chóng và hiệu quả</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card" onclick="showSection('tax-calculator')">
+                        <div class="feature-icon">💰</div>
+                        <h3 class="feature-title">Tính Thuế & Lãi Suất</h3>
+                        <p class="feature-desc">Tính thuế thu nhập cá nhân, lãi suất vay và tiết kiệm một cách chính xác</p>
+                    </div>
+                    
+                    <div class="feature-card" onclick="showSection('bmi-calculator')">
+                        <div class="feature-icon">⚖️</div>
+                        <h3 class="feature-title">Máy Tính BMI</h3>
+                        <p class="feature-desc">Tính chỉ số khối cơ thể và nhận lời khuyên sức khỏe phù hợp</p>
+                    </div>
+                    
+                    <div class="feature-card" onclick="showSection('todo-manager')">
+                        <div class="feature-icon">📝</div>
+                        <h3 class="feature-title">Quản Lý Công Việc</h3>
+                        <p class="feature-desc">Tổ chức và theo dõi công việc hiệu quả với hệ thống to-do list thông minh</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tax Calculator Section -->
+        <div id="tax-calculator" class="tool-section">
+            <div class="calculator-grid">
+                <!-- Tính thuế thu nhập cá nhân -->
+                <div class="calculator-card">
+                    <h2 class="card-title">🧾 Thuế Thu Nhập Cá Nhân</h2>
+                    
+                    <div class="input-group">
+                        <label for="monthlyIncome">Thu nhập hàng tháng (VNĐ):</label>
+                        <input type="number" id="monthlyIncome" placeholder="15000000" min="0">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="dependents">Số người phụ thuộc:</label>
+                        <input type="number" id="dependents" placeholder="2" min="0" max="10">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="insurance">Bảo hiểm bắt buộc (VNĐ):</label>
+                        <input type="number" id="insurance" placeholder="1500000" min="0">
+                    </div>
+                    
+                    <button class="calculate-btn" onclick="calculateTax()">
+                        📊 Tính Thuế
+                    </button>
+                    
+                    <div class="result" id="taxResult">
+                        <div class="result-item">
+                            <span class="result-label">Thu nhập chịu thuế:</span>
+                            <span class="result-value" id="taxableIncome">0 VNĐ</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Thuế phải nộp:</span>
+                            <span class="result-value" id="taxAmount">0 VNĐ</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Thu nhập sau thuế:</span>
+                            <span class="result-value" id="netIncome">0 VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tính lãi suất vay -->
+                <div class="calculator-card">
+                    <h2 class="card-title">🏦 Lãi Suất Vay</h2>
+                    
+                    <div class="input-group">
+                        <label for="loanAmount">Số tiền vay (VNĐ):</label>
+                        <input type="number" id="loanAmount" placeholder="500000000" min="0">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="interestRate">Lãi suất (%/năm):</label>
+                        <input type="number" id="interestRate" placeholder="8.5" min="0" max="100" step="0.1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="loanTerm">Thời hạn vay (tháng):</label>
+                        <input type="number" id="loanTerm" placeholder="240" min="1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="paymentType">Hình thức trả:</label>
+                        <select id="paymentType">
+                            <option value="equal">Trả đều hàng tháng</option>
+                            <option value="decreasing">Trả giảm dần</option>
+                        </select>
+                    </div>
+                    
+                    <button class="calculate-btn" onclick="calculateLoan()">
+                        💳 Tính Lãi Vay
+                    </button>
+                    
+                    <div class="result" id="loanResult">
+                        <div class="result-item">
+                            <span class="result-label">Trả hàng tháng:</span>
+                            <span class="result-value" id="monthlyPayment">0 VNĐ</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Tổng lãi phải trả:</span>
+                            <span class="result-value" id="totalInterest">0 VNĐ</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Tổng tiền phải trả:</span>
+                            <span class="result-value" id="totalPayment">0 VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tính lãi suất tiết kiệm -->
+                <div class="calculator-card">
+                    <h2 class="card-title">🏪 Lãi Suất Tiết Kiệm</h2>
+                    
+                    <div class="input-group">
+                        <label for="principal">Số tiền gửi (VNĐ):</label>
+                        <input type="number" id="principal" placeholder="100000000" min="0">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="savingsRate">Lãi suất (%/năm):</label>
+                        <input type="number" id="savingsRate" placeholder="6.5" min="0" max="100" step="0.1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="savingsTerm">Kỳ hạn (tháng):</label>
+                        <input type="number" id="savingsTerm" placeholder="12" min="1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="compoundType">Loại lãi:</label>
+                        <select id="compoundType">
+                            <option value="simple">Lãi đơn</option>
+                            <option value="compound">Lãi kép (ghép vào gốc)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="calculate-btn" onclick="calculateSavings()">
+                        💎 Tính Lãi Tiết Kiệm
+                    </button>
+                    
+                    <div class="result" id="savingsResult">
+                        <div class="result-item">
+                            <span class="result-label">Lãi nhận được:</span>
+                            <span class="result-value" id="interestEarned">0 VNĐ</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Tổng tiền nhận về:</span>
+                            <span class="result-value" id="totalAmount">0 VNĐ</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Lãi trung bình/tháng:</span>
+                            <span class="result-value" id="monthlyInterest">0 VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BMI Calculator Section -->
+        <div id="bmi-calculator" class="tool-section">
+            <div class="bmi-container">
+                <h1 class="card-title">⚖️ Máy Tính BMI</h1>
+                <p style="color: #718096; margin-bottom: 30px;">Tính chỉ số khối cơ thể và đánh giá tình trạng sức khỏe</p>
+
+                <div class="unit-toggle">
+                    <button class="unit-btn active" onclick="switchUnit('metric')">Mét / Kg</button>
+                    <button class="unit-btn" onclick="switchUnit('imperial')">Feet / Pounds</button>
+                </div>
+
+                <div id="metricInputs">
+                    <div class="input-group">
+                        <label for="height">Chiều cao (cm):</label>
+                        <input type="number" id="height" placeholder="170" min="50" max="250" step="0.1">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="weight">Cân nặng (kg):</label>
+                        <input type="number" id="weight" placeholder="65" min="20" max="300" step="0.1">
+                    </div>
+                </div>
+
+                <div id="imperialInputs" style="display: none;">
+                    <div class="input-group">
+                        <label>Chiều cao:</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <input type="number" id="feet" placeholder="5" min="3" max="8">
+                            <input type="number" id="inches" placeholder="7" min="0" max="11">
+                        </div>
+                        <small style="color: #718096; margin-top: 5px; display: block;">Feet / Inches</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="weightLbs">Cân nặng (pounds):</label>
+                        <input type="number" id="weightLbs" placeholder="143" min="44" max="660" step="0.1">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateBMI()">
+                    📊 Tính BMI
+                </button>
+
+                <div class="result" id="bmiResult">
+                    <div class="bmi-value" id="bmiValue">0.0</div>
+                    <div class="bmi-category" id="bmiCategory">Bình thường</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                        <div style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 15px; text-align: center; border: 2px solid #e2e8f0;">
+                            <h4 style="color: #667eea; font-size: 0.9rem; margin-bottom: 5px;">CÂN NẶNG LÝ TƯỞNG</h4>
+                            <div style="color: #2d3748; font-size: 1.1rem; font-weight: 700;" id="idealWeight">-</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 15px; text-align: center; border: 2px solid #e2e8f0;">
+                            <h4 style="color: #667eea; font-size: 0.9rem; margin-bottom: 5px;">CALO/NGÀY</h4>
+                            <div style="color: #2d3748; font-size: 1.1rem; font-weight: 700;" id="dailyCalories">-</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 20px; margin-top: 20px; text-align: left; border-left: 5px solid #667eea;">
+                        <h3 style="color: #2d3748; margin-bottom: 10px; font-size: 1.2rem;">💡 Lời khuyên sức khỏe</h3>
+                        <p style="color: #4a5568; line-height: 1.6;" id="adviceText">Hãy duy trì lối sống lành mạnh!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Todo Manager Section -->
+        <div id="todo-manager" class="tool-section">
+            <div class="todo-main">
+                <div class="todo-section">
+                    <h2 class="card-title">✅ Danh Sách Công Việc</h2>
+                    
+                    <!-- Add Todo Form -->
+                    <div class="add-todo-form">
+                        <div class="form-row">
+                            <div style="display: flex; flex-direction: column;">
+                                <label for="todoText">Công việc:</label>
+                                <input type="text" id="todoText" placeholder="Nhập công việc cần làm..." maxlength="200">
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <label for="todoPriority">Ưu tiên:</label>
+                                <select id="todoPriority">
+                                    <option value="low">Thấp</option>
+                                    <option value="medium" selected>Trung bình</option>
+                                    <option value="high">Cao</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <label for="todoCategory">Danh mục:</label>
+                                <select id="todoCategory">
+                                    <option value="work">Công việc</option>
+                                    <option value="personal">Cá nhân</option>
+                                    <option value="study">Học tập</option>
+                                    <option value="health">Sức khỏe</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="action-btn" onclick="addTodo()" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                            ➕ Thêm Công Việc
+                        </button>
+                    </div>
+
+                    <!-- Todo List -->
+                    <div class="todo-list" id="todoList">
+                        <div style="text-align: center; padding: 60px 20px; color: #718096;">
+                            <h3>🎯 Chưa có công việc nào</h3>
+                            <p>Hãy thêm công việc đầu tiên của bạn!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h2 class="card-title">📊 Thống Kê</h2>
+                    
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalTodos">0</div>
+                        <div class="stats-label">Tổng Công Việc</div>
+                    </div>
+
+                    <div style="background: #e2e8f0; border-radius: 10px; height: 20px; margin: 15px 0; overflow: hidden;">
+                        <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); height: 100%; border-radius: 10px; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem; width: 0%;" id="progressFill">0%</div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: #48bb78;" id="completedCount">0</div>
+                            <div style="font-size: 0.8rem; color: #718096; text-transform: uppercase;">Hoàn thành</div>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: #f56565;" id="pendingCount">0</div>
+                            <div style="font-size: 0.8rem; color: #718096; text-transform: uppercase;">Chưa xong</div>
+                        </div>
+                    </div>
+
+                    <button class="action-btn" onclick="clearCompleted()" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);">
+                        🗑️ Xóa Đã Hoàn Thành
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        let currentUnit = 'metric';
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Initialize section-specific data
+            if (sectionId === 'todo-manager') {
+                renderTodos();
+                updateStats();
+            }
+        }
+
+        // Format number to Vietnamese currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(Math.round(amount)) + ' VNĐ';
+        }
+
+        // Tax Calculator Functions
+        function calculateTax() {
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const dependents = parseInt(document.getElementById('dependents').value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+            
+            if (monthlyIncome <= 0) {
+                alert('Vui lòng nhập thu nhập hợp lệ!');
+                return;
+            }
+
+            const personalDeduction = 11000000;
+            const dependentDeduction = 4400000;
+            
+            const totalDeductions = personalDeduction + (dependents * dependentDeduction) + insurance;
+            const taxableIncome = Math.max(0, monthlyIncome - totalDeductions);
+            
+            let tax = 0;
+            const brackets = [
+                { min: 0, max: 5000000, rate: 0.05 },
+                { min: 5000000, max: 10000000, rate: 0.10 },
+                { min: 10000000, max: 18000000, rate: 0.15 },
+                { min: 18000000, max: 32000000, rate: 0.20 },
+                { min: 32000000, max: 52000000, rate: 0.25 },
+                { min: 52000000, max: 80000000, rate: 0.30 },
+                { min: 80000000, max: Infinity, rate: 0.35 }
+            ];
+            
+            for (let bracket of brackets) {
+                if (taxableIncome > bracket.min) {
+                    const taxableAtBracket = Math.min(taxableIncome, bracket.max) - bracket.min;
+                    tax += taxableAtBracket * bracket.rate;
+                }
+            }
+            
+            const netIncome = monthlyIncome - tax;
+            
+            document.getElementById('taxableIncome').textContent = formatCurrency(taxableIncome);
+            document.getElementById('taxAmount').textContent = formatCurrency(tax);
+            document.getElementById('netIncome').textContent = formatCurrency(netIncome);
+            document.getElementById('taxResult').classList.add('show');
+        }
+
+        // Loan Calculator Functions
+        function calculateLoan() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const termMonths = parseInt(document.getElementById('loanTerm').value) || 0;
+            const paymentType = document.getElementById('paymentType').value;
+            
+            if (loanAmount <= 0 || annualRate <= 0 || termMonths <= 0) {
+                alert('Vui lòng nhập đầy đủ thông tin hợp lệ!');
+                return;
+            }
+            
+            const monthlyRate = annualRate / 100 / 12;
+            let monthlyPayment, totalInterest, totalPayment;
+            
+            if (paymentType === 'equal') {
+                monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / 
+                                (Math.pow(1 + monthlyRate, termMonths) - 1);
+                totalPayment = monthlyPayment * termMonths;
+                totalInterest = totalPayment - loanAmount;
+            } else {
+                const principalPayment = loanAmount / termMonths;
+                totalInterest = 0;
+                for (let i = 0; i < termMonths; i++) {
+                    const remainingPrincipal = loanAmount - (principalPayment * i);
+                    totalInterest += remainingPrincipal * monthlyRate;
+                }
+                monthlyPayment = principalPayment + (loanAmount * monthlyRate);
+                totalPayment = loanAmount + totalInterest;
+            }
+            
+            document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
+            document.getElementById('loanResult').classList.add('show');
+        }
+
+        // Savings Calculator Functions
+        function calculateSavings() {
+            const principal = parseFloat(document.getElementById('principal').value) || 0;
+            const annualRate = parseFloat(document.getElementById('savingsRate').value) || 0;
+            const termMonths = parseInt(document.getElementById('savingsTerm').value) || 0;
+            const compoundType = document.getElementById('compoundType').value;
+            
+            if (principal <= 0 || annualRate <= 0 || termMonths <= 0) {
+                alert('Vui lòng nhập đầy đủ thông tin hợp lệ!');
+                return;
+            }
+            
+            let totalAmount, interestEarned;
+            
+            if (compoundType === 'simple') {
+                interestEarned = principal * (annualRate / 100) * (termMonths / 12);
+                totalAmount = principal + interestEarned;
+            } else {
+                const monthlyRate = annualRate / 100 / 12;
+                totalAmount = principal * Math.pow(1 + monthlyRate, termMonths);
+                interestEarned = totalAmount - principal;
+            }
+            
+            const monthlyInterest = interestEarned / termMonths;
+            
+            document.getElementById('interestEarned').textContent = formatCurrency(interestEarned);
+            document.getElementById('totalAmount').textContent = formatCurrency(totalAmount);
+            document.getElementById('monthlyInterest').textContent = formatCurrency(monthlyInterest);
+            document.getElementById('savingsResult').classList.add('show');
+        }
+
+        // BMI Calculator Functions
+        function switchUnit(unit) {
+            currentUnit = unit;
+            
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (unit === 'metric') {
+                document.getElementById('metricInputs').style.display = 'block';
+                document.getElementById('imperialInputs').style.display = 'none';
+            } else {
+                document.getElementById('metricInputs').style.display = 'none';
+                document.getElementById('imperialInputs').style.display = 'block';
+            }
+            
+            document.getElementById('bmiResult').classList.remove('show');
+        }
+
+        function calculateBMI() {
+            let height, weight;
+            
+            if (currentUnit === 'metric') {
+                height = parseFloat(document.getElementById('height').value);
+                weight = parseFloat(document.getElementById('weight').value);
+                
+                if (!height || !weight || height <= 0 || weight <= 0) {
+                    alert('Vui lòng nhập chiều cao và cân nặng hợp lệ!');
+                    return;
+                }
+                
+                height = height / 100;
+            } else {
+                const feet = parseFloat(document.getElementById('feet').value) || 0;
+                const inches = parseFloat(document.getElementById('inches').value) || 0;
+                const weightLbs = parseFloat(document.getElementById('weightLbs').value);
+                
+                if (feet <= 0 || !weightLbs || weightLbs <= 0) {
+                    alert('Vui lòng nhập chiều cao và cân nặng hợp lệ!');
+                    return;
+                }
+                
+                height = ((feet * 12) + inches) * 0.0254;
+                weight = weightLbs * 0.453592;
+            }
+            
+            const bmi = weight / (height * height);
+            displayBMIResults(bmi, height, weight);
+        }
+
+        function displayBMIResults(bmi, height, weight) {
+            document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+            
+            let category, categoryClass, advice;
+            
+            if (bmi < 18.5) {
+                category = 'Thiếu cân';
+                categoryClass = 'underweight';
+                advice = 'Bạn cần tăng cân một cách lành mạnh. Hãy ăn nhiều protein, carbohydrate phức hợp và tập thể dục để xây dựng cơ bắp.';
+            } else if (bmi >= 18.5 && bmi < 25) {
+                category = 'Bình thường';
+                categoryClass = 'normal';
+                advice = 'Chúc mừng! Cân nặng của bạn đang ở mức lý tưởng. Hãy duy trì lối sống lành mạnh.';
+            } else if (bmi >= 25 && bmi < 30) {
+                category = 'Thừa cân';
+                categoryClass = 'overweight';
+                advice = 'Bạn đang thừa cân nhẹ. Hãy giảm 5-10% cân nặng hiện tại thông qua chế độ ăn ít calo hơn.';
+            } else {
+                category = 'Béo phì';
+                categoryClass = 'obese';
+                advice = 'Cân nặng của bạn đang ở mức béo phì. Hãy tham khảo ý kiến bác sĩ để có kế hoạch giảm cân an toàn.';
+            }
+            
+            const categoryElement = document.getElementById('bmiCategory');
+            categoryElement.textContent = category;
+            categoryElement.className = `bmi-category ${categoryClass}`;
+            
+            // Set category colors
+            const colors = {
+                underweight: { bg: '#bee3f8', color: '#2b6cb0' },
+                normal: { bg: '#c6f6d5', color: '#276749' },
+                overweight: { bg: '#fbb6ce', color: '#b83280' },
+                obese: { bg: '#fed7d7', color: '#c53030' }
+            };
+            
+            categoryElement.style.background = colors[categoryClass].bg;
+            categoryElement.style.color = colors[categoryClass].color;
+            
+            document.getElementById('adviceText').textContent = advice;
+            
+            const heightM = height;
+            const minIdealWeight = 18.5 * heightM * heightM;
+            const maxIdealWeight = 24.9 * heightM * heightM;
+            document.getElementById('idealWeight').textContent = 
+                `${minIdealWeight.toFixed(1)} - ${maxIdealWeight.toFixed(1)} kg`;
+            
+            const bmr = 88.362 + (13.397 * weight) + (4.799 * (height * 100)) - (5.677 * 25);
+            const dailyCalories = Math.round(bmr * 1.4);
+            document.getElementById('dailyCalories').textContent = `${dailyCalories} cal`;
+            
+            document.getElementById('bmiResult').classList.add('show');
+        }
+
+        // Todo Manager Functions
+        const categoryNames = {
+            work: 'Công việc',
+            personal: 'Cá nhân',
+            study: 'Học tập',
+            health: 'Sức khỏe',
+            other: 'Khác'
+        };
+
+        const priorityNames = {
+            high: 'Cao',
+            medium: 'Trung bình',
+            low: 'Thấp'
+        };
+
+        function addTodo() {
+            const text = document.getElementById('todoText').value.trim();
+            const priority = document.getElementById('todoPriority').value;
+            const category = document.getElementById('todoCategory').value;
+
+            if (!text) {
+                alert('Vui lòng nhập nội dung công việc!');
+                return;
+            }
+
+            const todo = {
+                id: Date.now(),
+                text: text,
+                priority: priority,
+                category: category,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            todos.unshift(todo);
+            saveTodos();
+            renderTodos();
+            updateStats();
+
+            document.getElementById('todoText').value = '';
+            document.getElementById('todoPriority').value = 'medium';
+            document.getElementById('todoCategory').value = 'work';
+        }
+
+        function toggleTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                saveTodos();
+                renderTodos();
+                updateStats();
+            }
+        }
+
+        function deleteTodo(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
+                todos = todos.filter(t => t.id !== id);
+                saveTodos();
+                renderTodos();
+                updateStats();
+            }
+        }
+
+        function clearCompleted() {
+            const completedCount = todos.filter(t => t.completed).length;
+            if (completedCount === 0) {
+                alert('Không có công việc đã hoàn thành nào để xóa!');
+                return;
+            }
+
+            if (confirm(`Bạn có chắc chắn muốn xóa ${completedCount} công việc đã hoàn thành?`)) {
+                todos = todos.filter(t => !t.completed);
+                saveTodos();
+                renderTodos();
+                updateStats();
+            }
+        }
+
+        function renderTodos() {
+            const todoList = document.getElementById('todoList');
+
+            if (todos.length === 0) {
+                todoList.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: #718096;">
+                        <h3>🎯 Chưa có công việc nào</h3>
+                        <p>Hãy thêm công việc đầu tiên của bạn!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            todoList.innerHTML = todos.map(todo => `
+                <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                    <div class="todo-header">
+                        <div class="todo-text">${todo.text}</div>
+                        <div class="todo-actions">
+                            <button class="todo-btn complete-btn" onclick="toggleTodo(${todo.id})">
+                                ${todo.completed ? '↩️ Hoàn tác' : '✅ Hoàn thành'}
+                            </button>
+                            <button class="todo-btn delete-btn" onclick="deleteTodo(${todo.id})">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                        <span style="padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; background: ${getPriorityColor(todo.priority).bg}; color: ${getPriorityColor(todo.priority).color};">
+                            ${priorityNames[todo.priority]}
+                        </span>
+                        <span style="padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: #e2e8f0; color: #4a5568;">
+                            ${categoryNames[todo.category]}
+                        </span>
+                        <span style="font-size: 0.8rem; color: #718096;">
+                            ${new Date(todo.createdAt).toLocaleDateString('vi-VN')}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getPriorityColor(priority) {
+            const colors = {
+                high: { bg: '#fed7d7', color: '#c53030' },
+                medium: { bg: '#fbb6ce', color: '#b83280' },
+                low: { bg: '#c6f6d5', color: '#276749' }
+            };
+            return colors[priority];
+        }
+
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const pending = total - completed;
+            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('totalTodos').textContent = total;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('pendingCount').textContent = pending;
+
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${completionRate}%`;
+            progressFill.textContent = `${completionRate}%`;
+        }
+
+        function saveTodos() {
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
+        // Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeSection = document.querySelector('.tool-section.active');
+                if (activeSection) {
+                    const sectionId = activeSection.id;
+                    if (sectionId === 'todo-manager' && e.target.id === 'todoText') {
+                        addTodo();
+                    } else if (sectionId === 'tax-calculator') {
+                        calculateTax();
+                    } else if (sectionId === 'bmi-calculator') {
+                        calculateBMI();
+                    }
+                }
+            }
+        });
+
+        // Initialize
+        renderTodos();
+        updateStats();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966dacccf07685a9',t:'MTc1MzgwMzIxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
