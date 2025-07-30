@@ -1,542 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Tool Tích Hợp</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.9rem;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            font-weight: 700;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-
-        .tool-section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tool-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .welcome-section {
-            text-align: center;
-            color: white;
-            padding: 60px 20px;
-        }
-
-        .welcome-title {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .welcome-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .feature-title {
-            color: #2d3748;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .feature-desc {
-            color: #4a5568;
-            line-height: 1.6;
-        }
-
-        /* Tool-specific styles */
-        .calculator-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .calculator-card, .tool-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .calculator-card:hover, .tool-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-title {
-            color: #2d3748;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            color: #2d3748;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .calculate-btn, .action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .calculate-btn:hover, .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .result {
-            background: #f0f8ff;
-            border-left: 5px solid #667eea;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            60% { transform: translateY(-10px); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes rainbow {
-            0% { color: #ff6b6b; }
-            16% { color: #4ecdc4; }
-            32% { color: #45b7d1; }
-            48% { color: #96ceb4; }
-            64% { color: #feca57; }
-            80% { color: #ff9ff3; }
-            100% { color: #ff6b6b; }
-        }
-
-        @keyframes progressBar {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
-
-        .result-animation {
-            animation: bounce 1s ease, pulse 2s infinite;
-        }
-
-        .rainbow-text {
-            animation: rainbow 3s linear infinite;
-        }
-
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .result-item:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #667eea;
-        }
-
-        .result-label {
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .result-value {
-            color: #2d3748;
-            font-weight: 700;
-        }
-
-        /* BMI specific styles */
-        .bmi-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .unit-toggle {
-            display: flex;
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 30px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: transparent;
-            color: #4a5568;
-        }
-
-        .unit-btn.active {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .bmi-value {
-            font-size: 3rem;
-            font-weight: 900;
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
-
-        .bmi-category {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            padding: 10px 20px;
-            border-radius: 25px;
-            display: inline-block;
-        }
-
-        /* Todo specific styles */
-        .todo-main {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 25px;
-        }
-
-        .todo-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        .stats-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            height: fit-content;
-        }
-
-        .add-todo-form {
-            background: #f7fafc;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .todo-list {
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .todo-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #667eea;
-            transition: all 0.3s ease;
-        }
-
-        .todo-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .todo-item.completed {
-            opacity: 0.7;
-            border-left-color: #48bb78;
-        }
-
-        .todo-item.completed .todo-text {
-            text-decoration: line-through;
-            color: #718096;
-        }
-
-        .todo-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .todo-text {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d3748;
-            flex: 1;
-            margin-right: 15px;
-        }
-
-        .todo-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .todo-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .complete-btn {
-            background: #48bb78;
-            color: white;
-        }
-
-        .edit-btn {
-            background: #4299e1;
-            color: white;
-        }
-
-        .delete-btn {
-            background: #f56565;
-            color: white;
-        }
-
-        .stats-card {
-            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 2px solid #667eea;
-        }
-
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-
-        .stats-label {
-            color: #4a5568;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                justify-content: center;
-            }
-
-            .nav-btn {
-                padding: 10px 15px;
-                font-size: 0.8rem;
-            }
-
-            .calculator-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .todo-main {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .welcome-title {
-                font-size: 2rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+    <!-- Liên kết đến file CSS bên ngoài -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="header">
         <div class="header-content">
@@ -561,50 +34,53 @@
             <div class="welcome-section">
                 <h1 class="welcome-title">Chào Mừng Đến Với Hệ Thống Tool Tích Hợp</h1>
                 <p class="welcome-subtitle">Tất cả công cụ hữu ích trong một nơi - Tiện lợi, nhanh chóng và hiệu quả</p>
-                
+
                 <div class="features-grid">
                     <div class="feature-card" onclick="showSection('tax-calculator')">
                         <div class="feature-icon">💰</div>
                         <h3 class="feature-title">Tính Thuế & Lãi Suất</h3>
-                        <p class="feature-desc">Tính thuế thu nhập cá nhân, lãi suất vay và tiết kiệm một cách chính xác</p>
+                        <p class="feature-desc">Tính thuế thu nhập cá nhân, lãi suất vay và tiết kiệm một cách chính xác
+                        </p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('bmi-calculator')">
                         <div class="feature-icon">⚖️</div>
                         <h3 class="feature-title">Máy Tính BMI</h3>
                         <p class="feature-desc">Tính chỉ số khối cơ thể và nhận lời khuyên sức khỏe phù hợp</p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('todo-manager')">
                         <div class="feature-icon">📝</div>
                         <h3 class="feature-title">Quản Lý Công Việc</h3>
-                        <p class="feature-desc">Tổ chức và theo dõi công việc hiệu quả với hệ thống to-do list thông minh</p>
+                        <p class="feature-desc">Tổ chức và theo dõi công việc hiệu quả với hệ thống to-do list thông
+                            minh</p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('password-generator')">
                         <div class="feature-icon">🔐</div>
                         <h3 class="feature-title">Tạo Mật Khẩu</h3>
                         <p class="feature-desc">Tạo mật khẩu mạnh và an toàn với nhiều tùy chọn tùy chỉnh</p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('unit-converter')">
                         <div class="feature-icon">🔄</div>
                         <h3 class="feature-title">Chuyển Đổi Đơn Vị</h3>
                         <p class="feature-desc">Chuyển đổi nhanh chóng giữa các đơn vị đo lường khác nhau</p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('qr-generator')">
                         <div class="feature-icon">📱</div>
                         <h3 class="feature-title">Tạo QR Code</h3>
                         <p class="feature-desc">Tạo mã QR cho văn bản, URL, số điện thoại và nhiều loại dữ liệu khác</p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('random-picker')">
                         <div class="feature-icon">🎲</div>
                         <h3 class="feature-title">Random Picker</h3>
-                        <p class="feature-desc">Chọn ngẫu nhiên tên, số, hoặc bất kỳ thứ gì với hiệu ứng quay số bắt mắt</p>
+                        <p class="feature-desc">Chọn ngẫu nhiên tên, số, hoặc bất kỳ thứ gì với hiệu ứng quay số bắt mắt
+                        </p>
                     </div>
-                    
+
                     <div class="feature-card" onclick="showSection('text-reader')">
                         <div class="feature-icon">📖</div>
                         <h3 class="feature-title">Đọc Text Từ Ảnh</h3>
@@ -620,26 +96,26 @@
                 <!-- Tính thuế thu nhập cá nhân -->
                 <div class="calculator-card">
                     <h2 class="card-title">🧾 Thuế Thu Nhập Cá Nhân</h2>
-                    
+
                     <div class="input-group">
                         <label for="monthlyIncome">Thu nhập hàng tháng (VNĐ):</label>
                         <input type="number" id="monthlyIncome" placeholder="15000000" min="0">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="dependents">Số người phụ thuộc:</label>
                         <input type="number" id="dependents" placeholder="2" min="0" max="10">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="insurance">Bảo hiểm bắt buộc (VNĐ):</label>
                         <input type="number" id="insurance" placeholder="1500000" min="0">
                     </div>
-                    
+
                     <button class="calculate-btn" onclick="calculateTax()">
                         📊 Tính Thuế
                     </button>
-                    
+
                     <div class="result" id="taxResult">
                         <div class="result-item">
                             <span class="result-label">Thu nhập chịu thuế:</span>
@@ -659,22 +135,22 @@
                 <!-- Tính lãi suất vay -->
                 <div class="calculator-card">
                     <h2 class="card-title">🏦 Lãi Suất Vay</h2>
-                    
+
                     <div class="input-group">
                         <label for="loanAmount">Số tiền vay (VNĐ):</label>
                         <input type="number" id="loanAmount" placeholder="500000000" min="0">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="interestRate">Lãi suất (%/năm):</label>
                         <input type="number" id="interestRate" placeholder="8.5" min="0" max="100" step="0.1">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="loanTerm">Thời hạn vay (tháng):</label>
                         <input type="number" id="loanTerm" placeholder="240" min="1">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="paymentType">Hình thức trả:</label>
                         <select id="paymentType">
@@ -682,11 +158,11 @@
                             <option value="decreasing">Trả giảm dần</option>
                         </select>
                     </div>
-                    
+
                     <button class="calculate-btn" onclick="calculateLoan()">
                         💳 Tính Lãi Vay
                     </button>
-                    
+
                     <div class="result" id="loanResult">
                         <div class="result-item">
                             <span class="result-label">Trả hàng tháng:</span>
@@ -706,22 +182,22 @@
                 <!-- Tính lãi suất tiết kiệm -->
                 <div class="calculator-card">
                     <h2 class="card-title">🏪 Lãi Suất Tiết Kiệm</h2>
-                    
+
                     <div class="input-group">
                         <label for="principal">Số tiền gửi (VNĐ):</label>
                         <input type="number" id="principal" placeholder="100000000" min="0">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="savingsRate">Lãi suất (%/năm):</label>
                         <input type="number" id="savingsRate" placeholder="6.5" min="0" max="100" step="0.1">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="savingsTerm">Kỳ hạn (tháng):</label>
                         <input type="number" id="savingsTerm" placeholder="12" min="1">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="compoundType">Loại lãi:</label>
                         <select id="compoundType">
@@ -729,11 +205,11 @@
                             <option value="compound">Lãi kép (ghép vào gốc)</option>
                         </select>
                     </div>
-                    
+
                     <button class="calculate-btn" onclick="calculateSavings()">
                         💎 Tính Lãi Tiết Kiệm
                     </button>
-                    
+
                     <div class="result" id="savingsResult">
                         <div class="result-item">
                             <span class="result-label">Lãi nhận được:</span>
@@ -756,7 +232,8 @@
         <div id="bmi-calculator" class="tool-section">
             <div class="bmi-container">
                 <h1 class="card-title">⚖️ Máy Tính BMI</h1>
-                <p style="color: #718096; margin-bottom: 30px;">Tính chỉ số khối cơ thể và đánh giá tình trạng sức khỏe</p>
+                <p style="color: #718096; margin-bottom: 30px;">Tính chỉ số khối cơ thể và đánh giá tình trạng sức khỏe
+                </p>
 
                 <div class="unit-toggle">
                     <button class="unit-btn active" onclick="switchUnit('metric')">Mét / Kg</button>
@@ -798,19 +275,22 @@
                 <div class="result" id="bmiResult">
                     <div class="bmi-value" id="bmiValue">0.0</div>
                     <div class="bmi-category" id="bmiCategory">Bình thường</div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                        <div style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 15px; text-align: center; border: 2px solid #e2e8f0;">
+                        <div
+                            style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 15px; text-align: center; border: 2px solid #e2e8f0;">
                             <h4 style="color: #667eea; font-size: 0.9rem; margin-bottom: 5px;">CÂN NẶNG LÝ TƯỞNG</h4>
                             <div style="color: #2d3748; font-size: 1.1rem; font-weight: 700;" id="idealWeight">-</div>
                         </div>
-                        <div style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 15px; text-align: center; border: 2px solid #e2e8f0;">
+                        <div
+                            style="background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 15px; text-align: center; border: 2px solid #e2e8f0;">
                             <h4 style="color: #667eea; font-size: 0.9rem; margin-bottom: 5px;">CALO/NGÀY</h4>
                             <div style="color: #2d3748; font-size: 1.1rem; font-weight: 700;" id="dailyCalories">-</div>
                         </div>
                     </div>
 
-                    <div style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 20px; margin-top: 20px; text-align: left; border-left: 5px solid #667eea;">
+                    <div
+                        style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 20px; margin-top: 20px; text-align: left; border-left: 5px solid #667eea;">
                         <h3 style="color: #2d3748; margin-bottom: 10px; font-size: 1.2rem;">💡 Lời khuyên sức khỏe</h3>
                         <p style="color: #4a5568; line-height: 1.6;" id="adviceText">Hãy duy trì lối sống lành mạnh!</p>
                     </div>
@@ -822,30 +302,35 @@
         <div id="password-generator" class="tool-section">
             <div class="tool-card" style="max-width: 600px; margin: 0 auto;">
                 <h2 class="card-title">🔐 Tạo Mật Khẩu Mạnh</h2>
-                
+
                 <div class="input-group">
                     <label for="passwordLength">Độ dài mật khẩu: <span id="lengthValue">12</span></label>
-                    <input type="range" id="passwordLength" min="4" max="50" value="12" oninput="updateLengthValue()" style="width: 100%; margin-bottom: 10px;">
+                    <input type="range" id="passwordLength" min="4" max="50" value="12" oninput="updateLengthValue()"
+                        style="width: 100%; margin-bottom: 10px;">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
                     <div>
                         <label style="display: flex; align-items: center; margin-bottom: 15px; cursor: pointer;">
-                            <input type="checkbox" id="includeUppercase" checked style="margin-right: 10px; transform: scale(1.2);">
+                            <input type="checkbox" id="includeUppercase" checked
+                                style="margin-right: 10px; transform: scale(1.2);">
                             <span>Chữ hoa (A-Z)</span>
                         </label>
                         <label style="display: flex; align-items: center; margin-bottom: 15px; cursor: pointer;">
-                            <input type="checkbox" id="includeLowercase" checked style="margin-right: 10px; transform: scale(1.2);">
+                            <input type="checkbox" id="includeLowercase" checked
+                                style="margin-right: 10px; transform: scale(1.2);">
                             <span>Chữ thường (a-z)</span>
                         </label>
                     </div>
                     <div>
                         <label style="display: flex; align-items: center; margin-bottom: 15px; cursor: pointer;">
-                            <input type="checkbox" id="includeNumbers" checked style="margin-right: 10px; transform: scale(1.2);">
+                            <input type="checkbox" id="includeNumbers" checked
+                                style="margin-right: 10px; transform: scale(1.2);">
                             <span>Số (0-9)</span>
                         </label>
                         <label style="display: flex; align-items: center; margin-bottom: 15px; cursor: pointer;">
-                            <input type="checkbox" id="includeSymbols" checked style="margin-right: 10px; transform: scale(1.2);">
+                            <input type="checkbox" id="includeSymbols" checked
+                                style="margin-right: 10px; transform: scale(1.2);">
                             <span>Ký tự đặc biệt (!@#$%)</span>
                         </label>
                     </div>
@@ -856,18 +341,25 @@
                 </button>
 
                 <div class="result" id="passwordResult">
-                    <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; border: 2px solid #667eea;">
+                    <div
+                        style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; border: 2px solid #667eea;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: #2d3748; word-break: break-all; flex: 1; margin-right: 15px;" id="generatedPassword"></div>
-                            <button onclick="copyPassword()" style="background: #48bb78; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;">📋 Sao chép</button>
+                            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: #2d3748; word-break: break-all; flex: 1; margin-right: 15px;"
+                                id="generatedPassword"></div>
+                            <button onclick="copyPassword()"
+                                style="background: #48bb78; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;">📋
+                                Sao chép</button>
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.8); border-radius: 10px;">
-                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px;" id="strengthScore">0/5</div>
+                        <div
+                            style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.8); border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px;" id="strengthScore">0/5
+                            </div>
                             <div style="font-size: 0.9rem; color: #4a5568;">Độ mạnh</div>
                         </div>
-                        <div style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.8); border-radius: 10px;">
+                        <div
+                            style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.8); border-radius: 10px;">
                             <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px;" id="crackTime">-</div>
                             <div style="font-size: 0.9rem; color: #4a5568;">Thời gian bẻ khóa</div>
                         </div>
@@ -881,12 +373,12 @@
             <div class="calculator-grid">
                 <div class="calculator-card">
                     <h2 class="card-title">📏 Chuyển Đổi Độ Dài</h2>
-                    
+
                     <div class="input-group">
                         <label for="lengthValue">Giá trị:</label>
                         <input type="number" id="lengthValue" placeholder="100" step="any">
                     </div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                         <div>
                             <label for="lengthFrom">Từ:</label>
@@ -915,9 +407,9 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <button class="calculate-btn" onclick="convertLength()">🔄 Chuyển Đổi</button>
-                    
+
                     <div class="result" id="lengthResult">
                         <div class="result-item">
                             <span class="result-label">Kết quả:</span>
@@ -928,12 +420,12 @@
 
                 <div class="calculator-card">
                     <h2 class="card-title">⚖️ Chuyển Đổi Khối Lượng</h2>
-                    
+
                     <div class="input-group">
                         <label for="weightValue">Giá trị:</label>
                         <input type="number" id="weightValue" placeholder="1" step="any">
                     </div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                         <div>
                             <label for="weightFrom">Từ:</label>
@@ -958,9 +450,9 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <button class="calculate-btn" onclick="convertWeight()">🔄 Chuyển Đổi</button>
-                    
+
                     <div class="result" id="weightResult">
                         <div class="result-item">
                             <span class="result-label">Kết quả:</span>
@@ -971,12 +463,12 @@
 
                 <div class="calculator-card">
                     <h2 class="card-title">🌡️ Chuyển Đổi Nhiệt Độ</h2>
-                    
+
                     <div class="input-group">
                         <label for="tempValue">Giá trị:</label>
                         <input type="number" id="tempValue" placeholder="25" step="any">
                     </div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                         <div>
                             <label for="tempFrom">Từ:</label>
@@ -995,9 +487,9 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <button class="calculate-btn" onclick="convertTemperature()">🔄 Chuyển Đổi</button>
-                    
+
                     <div class="result" id="tempResult">
                         <div class="result-item">
                             <span class="result-label">Kết quả:</span>
@@ -1007,12 +499,11 @@
                 </div>
             </div>
         </div>
-
         <!-- QR Generator Section -->
         <div id="qr-generator" class="tool-section">
             <div class="tool-card" style="max-width: 600px; margin: 0 auto;">
                 <h2 class="card-title">📱 Tạo Mã QR Code</h2>
-                
+
                 <div class="input-group">
                     <label for="qrType">Loại dữ liệu:</label>
                     <select id="qrType" onchange="updateQRInputs()">
@@ -1027,7 +518,8 @@
                 <div id="qrInputs">
                     <div class="input-group">
                         <label for="qrText">Nội dung:</label>
-                        <textarea id="qrText" placeholder="Nhập văn bản cần tạo QR code..." style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 100px; resize: vertical;"></textarea>
+                        <textarea id="qrText" placeholder="Nhập văn bản cần tạo QR code..."
+                            style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 100px; resize: vertical;"></textarea>
                     </div>
                 </div>
 
@@ -1059,21 +551,26 @@
 
                 <div class="result" id="qrResult">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <div id="qrCodeContainer" style="display: inline-block; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);"></div>
+                        <div id="qrCodeContainer"
+                            style="display: inline-block; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                        </div>
                     </div>
                     <div style="text-align: center;">
-                        <button onclick="downloadQR()" style="background: #48bb78; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-right: 10px;">💾 Tải xuống</button>
-                        <button onclick="printQR()" style="background: #4299e1; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600;">🖨️ In</button>
+                        <button onclick="downloadQR()"
+                            style="background: #48bb78; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-right: 10px;">💾
+                            Tải xuống</button>
+                        <button onclick="printQR()"
+                            style="background: #4299e1; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600;">🖨️
+                            In</button>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Random Picker Section -->
         <div id="random-picker" class="tool-section">
             <div class="tool-card" style="max-width: 700px; margin: 0 auto;">
                 <h2 class="card-title">🎲 Random Picker - Chọn Ngẫu Nhiên</h2>
-                
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px;">
                     <div class="input-group">
                         <label for="pickerType">Loại Random:</label>
@@ -1098,7 +595,8 @@
                 <div id="pickerInputs">
                     <div class="input-group">
                         <label for="namesList">Danh sách tên (mỗi tên một dòng):</label>
-                        <textarea id="namesList" placeholder="Nguyễn Văn A&#10;Trần Thị B&#10;Lê Văn C&#10;Phạm Thị D" style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
+                        <textarea id="namesList" placeholder="Nguyễn Văn A&#10;Trần Thị B&#10;Lê Văn C&#10;Phạm Thị D"
+                            style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
                     </div>
                 </div>
 
@@ -1108,11 +606,15 @@
 
                 <!-- Spinning Wheel Animation -->
                 <div id="spinningWheel" style="display: none; text-align: center; margin: 30px 0;">
-                    <div style="position: relative; width: 300px; height: 300px; margin: 0 auto; border-radius: 50%; background: conic-gradient(#ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff, #5f27cd); animation: spin 2s linear infinite; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; color: #2d3748; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                    <div
+                        style="position: relative; width: 300px; height: 300px; margin: 0 auto; border-radius: 50%; background: conic-gradient(#ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff, #5f27cd); animation: spin 2s linear infinite; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+                        <div
+                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; color: #2d3748; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
                             🎲
                         </div>
-                        <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #2d3748;"></div>
+                        <div
+                            style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #2d3748;">
+                        </div>
                     </div>
                 </div>
 
@@ -1120,31 +622,44 @@
                 <div class="result" id="randomResult">
                     <div style="text-align: center; padding: 40px 20px;">
                         <div style="font-size: 4rem; margin-bottom: 20px;" id="resultIcon">🎉</div>
-                        <div style="font-size: 2.5rem; font-weight: 900; color: #2d3748; margin-bottom: 15px; word-break: break-word;" id="randomOutput">Kết quả sẽ hiển thị ở đây</div>
-                        <div style="font-size: 1.2rem; color: #4a5568; margin-bottom: 25px;" id="resultDescription">Nhấn nút để bắt đầu!</div>
-                        
+                        <div style="font-size: 2.5rem; font-weight: 900; color: #2d3748; margin-bottom: 15px; word-break: break-word;"
+                            id="randomOutput">Kết quả sẽ hiển thị ở đây</div>
+                        <div style="font-size: 1.2rem; color: #4a5568; margin-bottom: 25px;" id="resultDescription">Nhấn
+                            nút để bắt đầu!</div>
+
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
-                            <div style="background: rgba(255, 255, 255, 0.8); border-radius: 12px; padding: 20px; text-align: center; border: 2px solid #667eea;">
-                                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; margin-bottom: 5px;" id="totalItems">0</div>
-                                <div style="font-size: 0.9rem; color: #4a5568; text-transform: uppercase;">Tổng lựa chọn</div>
+                            <div
+                                style="background: rgba(255, 255, 255, 0.8); border-radius: 12px; padding: 20px; text-align: center; border: 2px solid #667eea;">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; margin-bottom: 5px;"
+                                    id="totalItems">0</div>
+                                <div style="font-size: 0.9rem; color: #4a5568; text-transform: uppercase;">Tổng lựa chọn
+                                </div>
                             </div>
-                            <div style="background: rgba(255, 255, 255, 0.8); border-radius: 12px; padding: 20px; text-align: center; border: 2px solid #48bb78;">
-                                <div style="font-size: 1.8rem; font-weight: 700; color: #48bb78; margin-bottom: 5px;" id="randomCount">0</div>
-                                <div style="font-size: 0.9rem; color: #4a5568; text-transform: uppercase;">Lần random</div>
+                            <div
+                                style="background: rgba(255, 255, 255, 0.8); border-radius: 12px; padding: 20px; text-align: center; border: 2px solid #48bb78;">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #48bb78; margin-bottom: 5px;"
+                                    id="randomCount">0</div>
+                                <div style="font-size: 0.9rem; color: #4a5568; text-transform: uppercase;">Lần random
+                                </div>
                             </div>
                         </div>
 
-                        <button onclick="startRandomPicker()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 25px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <button onclick="startRandomPicker()"
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 25px; transition: all 0.3s ease;"
+                            onmouseover="this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.transform='translateY(0)'">
                             🔄 Random Lại
                         </button>
                     </div>
                 </div>
 
                 <!-- History -->
-                <div style="background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 25px; margin-top: 25px; border: 2px solid #e2e8f0;">
+                <div
+                    style="background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 25px; margin-top: 25px; border: 2px solid #e2e8f0;">
                     <h3 style="color: #2d3748; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
                         📜 Lịch sử Random
-                        <button onclick="clearHistory()" style="background: #f56565; color: white; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">Xóa</button>
+                        <button onclick="clearHistory()"
+                            style="background: #f56565; color: white; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">Xóa</button>
                     </h3>
                     <div id="randomHistory" style="max-height: 200px; overflow-y: auto;">
                         <p style="color: #718096; text-align: center; padding: 20px;">Chưa có lịch sử random nào</p>
@@ -1152,112 +667,67 @@
                 </div>
             </div>
         </div>
+        <!---------------------------------------------------------------------------------------------------->
+        <!-- Text Reader Section - Đọc text từ hình ảnh-->
+        <div class="content">
+            <div class="language-selector">
+                <label for="language">Chọn ngôn ngữ:</label>
+                <select id="language">
+                    <option value="vie">Tiếng Việt</option>
+                    <option value="eng">English</option>
+                    <option value="chi_sim">中文 (简体)</option>
+                    <option value="jpn">日本語</option>
+                    <option value="kor">한국어</option>
+                    <option value="fra">Français</option>
+                    <option value="deu">Deutsch</option>
+                    <option value="spa">Español</option>
+                </select>
+            </div>
 
-        <!-- Text Reader Section -->
-        <div id="text-reader" class="tool-section">
-            <div class="tool-card" style="max-width: 800px; margin: 0 auto;">
-                <h2 class="card-title">📖 Đọc Text Từ Hình Ảnh</h2>
-                <p style="color: #718096; text-align: center; margin-bottom: 30px;">Tải lên hình ảnh để trích xuất văn bản một cách tự động</p>
-                
-                <!-- Upload Area -->
-                <div style="border: 3px dashed #cbd5e0; border-radius: 15px; padding: 40px; text-align: center; margin-bottom: 25px; background: rgba(255, 255, 255, 0.5); transition: all 0.3s ease;" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                    <div style="font-size: 3rem; margin-bottom: 15px; color: #a0aec0;">📁</div>
-                    <h3 style="color: #2d3748; margin-bottom: 10px;">Kéo thả hình ảnh vào đây</h3>
-                    <p style="color: #718096; margin-bottom: 20px;">hoặc</p>
-                    <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-                    <button onclick="document.getElementById('imageInput').click()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;">
-                        📷 Chọn Hình Ảnh
-                    </button>
-                    <p style="color: #a0aec0; font-size: 0.9rem; margin-top: 15px;">Hỗ trợ: JPG, PNG, GIF, WebP (tối đa 10MB)</p>
-                </div>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Kéo thả hình ảnh vào đây hoặc click để chọn file</div>
+                <button class="upload-btn" onclick="fileInput.value=null;fileInput.click();">
+                    Chọn Hình Ảnh
+                </button>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+            </div>
 
-                <!-- Image Preview -->
-                <div id="imagePreview" style="display: none; text-align: center; margin-bottom: 25px;">
-                    <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
-                        <img id="previewImg" style="max-width: 100%; max-height: 400px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                        <div style="margin-top: 15px;">
-                            <button onclick="processImage()" id="processBtn" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-right: 10px;">
-                                🔍 Đọc Text
-                            </button>
-                            <button onclick="clearImage()" style="background: #f56565; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600;">
-                                🗑️ Xóa
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="preview-container" id="previewContainer"></div>
 
-                <!-- Processing Status -->
-                <div id="processingStatus" style="display: none; text-align: center; padding: 30px; background: rgba(255, 255, 255, 0.8); border-radius: 15px; margin-bottom: 25px;">
-                    <div style="font-size: 2rem; margin-bottom: 15px;">⏳</div>
-                    <h3 style="color: #2d3748; margin-bottom: 10px;">Đang xử lý hình ảnh...</h3>
-                    <p style="color: #718096;">Vui lòng đợi trong giây lát</p>
-                    <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 20px; overflow: hidden;">
-                        <div style="width: 0%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 3px; animation: progressBar 3s ease-in-out infinite;" id="progressBar"></div>
-                    </div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
+                <div class="progress-text" id="progressText">Đang xử lý...</div>
+            </div>
 
-                <!-- Results -->
-                <div class="result" id="textResult">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="color: #2d3748; margin: 0;">📝 Văn bản đã trích xuất</h3>
-                        <div>
-                            <button onclick="copyExtractedText()" style="background: #4299e1; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 10px; font-size: 0.9rem;">
-                                📋 Sao chép
-                            </button>
-                            <button onclick="downloadText()" style="background: #48bb78; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
-                                💾 Tải xuống
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div style="background: white; border-radius: 10px; padding: 20px; border: 2px solid #e2e8f0; min-height: 150px;">
-                        <textarea id="extractedText" style="width: 100%; min-height: 200px; border: none; outline: none; font-size: 1rem; line-height: 1.6; color: #2d3748; resize: vertical; font-family: inherit;" placeholder="Văn bản sẽ hiển thị ở đây..."></textarea>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;">
-                        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 15px; text-align: center; border: 2px solid #667eea;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; margin-bottom: 5px;" id="charCount">0</div>
-                            <div style="font-size: 0.9rem; color: #4a5568;">Ký tự</div>
-                        </div>
-                        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 15px; text-align: center; border: 2px solid #48bb78;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #48bb78; margin-bottom: 5px;" id="wordCount">0</div>
-                            <div style="font-size: 0.9rem; color: #4a5568;">Từ</div>
-                        </div>
-                        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 15px; text-align: center; border: 2px solid #ed8936;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #ed8936; margin-bottom: 5px;" id="lineCount">0</div>
-                            <div style="font-size: 0.9rem; color: #4a5568;">Dòng</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
 
-                <!-- Tips -->
-                <div style="background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 25px; margin-top: 25px; border-left: 5px solid #667eea;">
-                    <h3 style="color: #2d3748; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                        💡 Mẹo để có kết quả tốt nhất
-                    </h3>
-                    <ul style="color: #4a5568; line-height: 1.8; margin: 0; padding-left: 20px;">
-                        <li>Sử dụng hình ảnh có độ phân giải cao và rõ nét</li>
-                        <li>Đảm bảo văn bản trong ảnh có độ tương phản tốt</li>
-                        <li>Tránh hình ảnh bị mờ, nghiêng hoặc bị che khuất</li>
-                        <li>Hỗ trợ tốt nhất cho văn bản tiếng Việt và tiếng Anh</li>
-                        <li>Kích thước file không quá 10MB để xử lý nhanh</li>
-                    </ul>
+            <div class="result-container" id="resultContainer">
+                <div class="result-header">
+                    <div class="result-title">📝 Văn bản đã trích xuất:</div>
+                    <button class="copy-btn" id="copyBtn">📋 Sao chép</button>
                 </div>
+                <div class="result-text" id="resultText"></div>
             </div>
         </div>
 
+        <!------------------------------------------------------------------------------------------------------------------------------------------->
         <!-- Todo Manager Section -->
         <div id="todo-manager" class="tool-section">
             <div class="todo-main">
                 <div class="todo-section">
                     <h2 class="card-title">✅ Danh Sách Công Việc</h2>
-                    
+
                     <!-- Add Todo Form -->
                     <div class="add-todo-form">
                         <div class="form-row">
                             <div style="display: flex; flex-direction: column;">
                                 <label for="todoText">Công việc:</label>
-                                <input type="text" id="todoText" placeholder="Nhập công việc cần làm..." maxlength="200">
+                                <input type="text" id="todoText" placeholder="Nhập công việc cần làm..."
+                                    maxlength="200">
                             </div>
                             <div style="display: flex; flex-direction: column;">
                                 <label for="todoPriority">Ưu tiên:</label>
@@ -1278,7 +748,8 @@
                                 </select>
                             </div>
                         </div>
-                        <button class="action-btn" onclick="addTodo()" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                        <button class="action-btn" onclick="addTodo()"
+                            style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
                             ➕ Thêm Công Việc
                         </button>
                     </div>
@@ -1294,28 +765,35 @@
 
                 <div class="stats-section">
                     <h2 class="card-title">📊 Thống Kê</h2>
-                    
+
                     <div class="stats-card">
                         <div class="stats-number" id="totalTodos">0</div>
                         <div class="stats-label">Tổng Công Việc</div>
                     </div>
 
-                    <div style="background: #e2e8f0; border-radius: 10px; height: 20px; margin: 15px 0; overflow: hidden;">
-                        <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); height: 100%; border-radius: 10px; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem; width: 0%;" id="progressFill">0%</div>
+                    <div
+                        style="background: #e2e8f0; border-radius: 10px; height: 20px; margin: 15px 0; overflow: hidden;">
+                        <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); height: 100%; border-radius: 10px; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem; width: 0%;"
+                            id="progressFill">0%</div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
-                        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
-                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: #48bb78;" id="completedCount">0</div>
+                        <div
+                            style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: #48bb78;"
+                                id="completedCount">0</div>
                             <div style="font-size: 0.8rem; color: #718096; text-transform: uppercase;">Hoàn thành</div>
                         </div>
-                        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
-                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: #f56565;" id="pendingCount">0</div>
+                        <div
+                            style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                            <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: #f56565;"
+                                id="pendingCount">0</div>
                             <div style="font-size: 0.8rem; color: #718096; text-transform: uppercase;">Chưa xong</div>
                         </div>
                     </div>
 
-                    <button class="action-btn" onclick="clearCompleted()" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);">
+                    <button class="action-btn" onclick="clearCompleted()"
+                        style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);">
                         🗑️ Xóa Đã Hoàn Thành
                     </button>
                 </div>
@@ -1323,1264 +801,9 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
-        let todos = JSON.parse(localStorage.getItem('todos')) || [];
-        let currentUnit = 'metric';
+    </div>
 
-        // Navigation
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.tool-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Update nav buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+    <script src="script.js"></script>
+</body>
 
-            // Initialize section-specific data
-            if (sectionId === 'todo-manager') {
-                renderTodos();
-                updateStats();
-            }
-        }
-
-        // Format number to Vietnamese currency
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('vi-VN').format(Math.round(amount)) + ' VNĐ';
-        }
-
-        // Tax Calculator Functions
-        function calculateTax() {
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const dependents = parseInt(document.getElementById('dependents').value) || 0;
-            const insurance = parseFloat(document.getElementById('insurance').value) || 0;
-            
-            if (monthlyIncome <= 0) {
-                alert('Vui lòng nhập thu nhập hợp lệ!');
-                return;
-            }
-
-            const personalDeduction = 11000000;
-            const dependentDeduction = 4400000;
-            
-            const totalDeductions = personalDeduction + (dependents * dependentDeduction) + insurance;
-            const taxableIncome = Math.max(0, monthlyIncome - totalDeductions);
-            
-            let tax = 0;
-            const brackets = [
-                { min: 0, max: 5000000, rate: 0.05 },
-                { min: 5000000, max: 10000000, rate: 0.10 },
-                { min: 10000000, max: 18000000, rate: 0.15 },
-                { min: 18000000, max: 32000000, rate: 0.20 },
-                { min: 32000000, max: 52000000, rate: 0.25 },
-                { min: 52000000, max: 80000000, rate: 0.30 },
-                { min: 80000000, max: Infinity, rate: 0.35 }
-            ];
-            
-            for (let bracket of brackets) {
-                if (taxableIncome > bracket.min) {
-                    const taxableAtBracket = Math.min(taxableIncome, bracket.max) - bracket.min;
-                    tax += taxableAtBracket * bracket.rate;
-                }
-            }
-            
-            const netIncome = monthlyIncome - tax;
-            
-            document.getElementById('taxableIncome').textContent = formatCurrency(taxableIncome);
-            document.getElementById('taxAmount').textContent = formatCurrency(tax);
-            document.getElementById('netIncome').textContent = formatCurrency(netIncome);
-            document.getElementById('taxResult').classList.add('show');
-        }
-
-        // Loan Calculator Functions
-        function calculateLoan() {
-            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
-            const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
-            const termMonths = parseInt(document.getElementById('loanTerm').value) || 0;
-            const paymentType = document.getElementById('paymentType').value;
-            
-            if (loanAmount <= 0 || annualRate <= 0 || termMonths <= 0) {
-                alert('Vui lòng nhập đầy đủ thông tin hợp lệ!');
-                return;
-            }
-            
-            const monthlyRate = annualRate / 100 / 12;
-            let monthlyPayment, totalInterest, totalPayment;
-            
-            if (paymentType === 'equal') {
-                monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / 
-                                (Math.pow(1 + monthlyRate, termMonths) - 1);
-                totalPayment = monthlyPayment * termMonths;
-                totalInterest = totalPayment - loanAmount;
-            } else {
-                const principalPayment = loanAmount / termMonths;
-                totalInterest = 0;
-                for (let i = 0; i < termMonths; i++) {
-                    const remainingPrincipal = loanAmount - (principalPayment * i);
-                    totalInterest += remainingPrincipal * monthlyRate;
-                }
-                monthlyPayment = principalPayment + (loanAmount * monthlyRate);
-                totalPayment = loanAmount + totalInterest;
-            }
-            
-            document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
-            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
-            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
-            document.getElementById('loanResult').classList.add('show');
-        }
-
-        // Savings Calculator Functions
-        function calculateSavings() {
-            const principal = parseFloat(document.getElementById('principal').value) || 0;
-            const annualRate = parseFloat(document.getElementById('savingsRate').value) || 0;
-            const termMonths = parseInt(document.getElementById('savingsTerm').value) || 0;
-            const compoundType = document.getElementById('compoundType').value;
-            
-            if (principal <= 0 || annualRate <= 0 || termMonths <= 0) {
-                alert('Vui lòng nhập đầy đủ thông tin hợp lệ!');
-                return;
-            }
-            
-            let totalAmount, interestEarned;
-            
-            if (compoundType === 'simple') {
-                interestEarned = principal * (annualRate / 100) * (termMonths / 12);
-                totalAmount = principal + interestEarned;
-            } else {
-                const monthlyRate = annualRate / 100 / 12;
-                totalAmount = principal * Math.pow(1 + monthlyRate, termMonths);
-                interestEarned = totalAmount - principal;
-            }
-            
-            const monthlyInterest = interestEarned / termMonths;
-            
-            document.getElementById('interestEarned').textContent = formatCurrency(interestEarned);
-            document.getElementById('totalAmount').textContent = formatCurrency(totalAmount);
-            document.getElementById('monthlyInterest').textContent = formatCurrency(monthlyInterest);
-            document.getElementById('savingsResult').classList.add('show');
-        }
-
-        // BMI Calculator Functions
-        function switchUnit(unit) {
-            currentUnit = unit;
-            
-            document.querySelectorAll('.unit-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            if (unit === 'metric') {
-                document.getElementById('metricInputs').style.display = 'block';
-                document.getElementById('imperialInputs').style.display = 'none';
-            } else {
-                document.getElementById('metricInputs').style.display = 'none';
-                document.getElementById('imperialInputs').style.display = 'block';
-            }
-            
-            document.getElementById('bmiResult').classList.remove('show');
-        }
-
-        function calculateBMI() {
-            let height, weight;
-            
-            if (currentUnit === 'metric') {
-                height = parseFloat(document.getElementById('height').value);
-                weight = parseFloat(document.getElementById('weight').value);
-                
-                if (!height || !weight || height <= 0 || weight <= 0) {
-                    alert('Vui lòng nhập chiều cao và cân nặng hợp lệ!');
-                    return;
-                }
-                
-                height = height / 100;
-            } else {
-                const feet = parseFloat(document.getElementById('feet').value) || 0;
-                const inches = parseFloat(document.getElementById('inches').value) || 0;
-                const weightLbs = parseFloat(document.getElementById('weightLbs').value);
-                
-                if (feet <= 0 || !weightLbs || weightLbs <= 0) {
-                    alert('Vui lòng nhập chiều cao và cân nặng hợp lệ!');
-                    return;
-                }
-                
-                height = ((feet * 12) + inches) * 0.0254;
-                weight = weightLbs * 0.453592;
-            }
-            
-            const bmi = weight / (height * height);
-            displayBMIResults(bmi, height, weight);
-        }
-
-        function displayBMIResults(bmi, height, weight) {
-            document.getElementById('bmiValue').textContent = bmi.toFixed(1);
-            
-            let category, categoryClass, advice;
-            
-            if (bmi < 18.5) {
-                category = 'Thiếu cân';
-                categoryClass = 'underweight';
-                advice = 'Bạn cần tăng cân một cách lành mạnh. Hãy ăn nhiều protein, carbohydrate phức hợp và tập thể dục để xây dựng cơ bắp.';
-            } else if (bmi >= 18.5 && bmi < 25) {
-                category = 'Bình thường';
-                categoryClass = 'normal';
-                advice = 'Chúc mừng! Cân nặng của bạn đang ở mức lý tưởng. Hãy duy trì lối sống lành mạnh.';
-            } else if (bmi >= 25 && bmi < 30) {
-                category = 'Thừa cân';
-                categoryClass = 'overweight';
-                advice = 'Bạn đang thừa cân nhẹ. Hãy giảm 5-10% cân nặng hiện tại thông qua chế độ ăn ít calo hơn.';
-            } else {
-                category = 'Béo phì';
-                categoryClass = 'obese';
-                advice = 'Cân nặng của bạn đang ở mức béo phì. Hãy tham khảo ý kiến bác sĩ để có kế hoạch giảm cân an toàn.';
-            }
-            
-            const categoryElement = document.getElementById('bmiCategory');
-            categoryElement.textContent = category;
-            categoryElement.className = `bmi-category ${categoryClass}`;
-            
-            // Set category colors
-            const colors = {
-                underweight: { bg: '#bee3f8', color: '#2b6cb0' },
-                normal: { bg: '#c6f6d5', color: '#276749' },
-                overweight: { bg: '#fbb6ce', color: '#b83280' },
-                obese: { bg: '#fed7d7', color: '#c53030' }
-            };
-            
-            categoryElement.style.background = colors[categoryClass].bg;
-            categoryElement.style.color = colors[categoryClass].color;
-            
-            document.getElementById('adviceText').textContent = advice;
-            
-            const heightM = height;
-            const minIdealWeight = 18.5 * heightM * heightM;
-            const maxIdealWeight = 24.9 * heightM * heightM;
-            document.getElementById('idealWeight').textContent = 
-                `${minIdealWeight.toFixed(1)} - ${maxIdealWeight.toFixed(1)} kg`;
-            
-            const bmr = 88.362 + (13.397 * weight) + (4.799 * (height * 100)) - (5.677 * 25);
-            const dailyCalories = Math.round(bmr * 1.4);
-            document.getElementById('dailyCalories').textContent = `${dailyCalories} cal`;
-            
-            document.getElementById('bmiResult').classList.add('show');
-        }
-
-        // Todo Manager Functions
-        const categoryNames = {
-            work: 'Công việc',
-            personal: 'Cá nhân',
-            study: 'Học tập',
-            health: 'Sức khỏe',
-            other: 'Khác'
-        };
-
-        const priorityNames = {
-            high: 'Cao',
-            medium: 'Trung bình',
-            low: 'Thấp'
-        };
-
-        function addTodo() {
-            const text = document.getElementById('todoText').value.trim();
-            const priority = document.getElementById('todoPriority').value;
-            const category = document.getElementById('todoCategory').value;
-
-            if (!text) {
-                alert('Vui lòng nhập nội dung công việc!');
-                return;
-            }
-
-            const todo = {
-                id: Date.now(),
-                text: text,
-                priority: priority,
-                category: category,
-                completed: false,
-                createdAt: new Date().toISOString()
-            };
-
-            todos.unshift(todo);
-            saveTodos();
-            renderTodos();
-            updateStats();
-
-            document.getElementById('todoText').value = '';
-            document.getElementById('todoPriority').value = 'medium';
-            document.getElementById('todoCategory').value = 'work';
-        }
-
-        function toggleTodo(id) {
-            const todo = todos.find(t => t.id === id);
-            if (todo) {
-                todo.completed = !todo.completed;
-                saveTodos();
-                renderTodos();
-                updateStats();
-            }
-        }
-
-        function deleteTodo(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
-                todos = todos.filter(t => t.id !== id);
-                saveTodos();
-                renderTodos();
-                updateStats();
-            }
-        }
-
-        function clearCompleted() {
-            const completedCount = todos.filter(t => t.completed).length;
-            if (completedCount === 0) {
-                alert('Không có công việc đã hoàn thành nào để xóa!');
-                return;
-            }
-
-            if (confirm(`Bạn có chắc chắn muốn xóa ${completedCount} công việc đã hoàn thành?`)) {
-                todos = todos.filter(t => !t.completed);
-                saveTodos();
-                renderTodos();
-                updateStats();
-            }
-        }
-
-        function renderTodos() {
-            const todoList = document.getElementById('todoList');
-
-            if (todos.length === 0) {
-                todoList.innerHTML = `
-                    <div style="text-align: center; padding: 60px 20px; color: #718096;">
-                        <h3>🎯 Chưa có công việc nào</h3>
-                        <p>Hãy thêm công việc đầu tiên của bạn!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            todoList.innerHTML = todos.map(todo => `
-                <div class="todo-item ${todo.completed ? 'completed' : ''}">
-                    <div class="todo-header">
-                        <div class="todo-text">${todo.text}</div>
-                        <div class="todo-actions">
-                            <button class="todo-btn complete-btn" onclick="toggleTodo(${todo.id})">
-                                ${todo.completed ? '↩️ Hoàn tác' : '✅ Hoàn thành'}
-                            </button>
-                            <button class="todo-btn delete-btn" onclick="deleteTodo(${todo.id})">
-                                🗑️ Xóa
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                        <span style="padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; background: ${getPriorityColor(todo.priority).bg}; color: ${getPriorityColor(todo.priority).color};">
-                            ${priorityNames[todo.priority]}
-                        </span>
-                        <span style="padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: #e2e8f0; color: #4a5568;">
-                            ${categoryNames[todo.category]}
-                        </span>
-                        <span style="font-size: 0.8rem; color: #718096;">
-                            ${new Date(todo.createdAt).toLocaleDateString('vi-VN')}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function getPriorityColor(priority) {
-            const colors = {
-                high: { bg: '#fed7d7', color: '#c53030' },
-                medium: { bg: '#fbb6ce', color: '#b83280' },
-                low: { bg: '#c6f6d5', color: '#276749' }
-            };
-            return colors[priority];
-        }
-
-        function updateStats() {
-            const total = todos.length;
-            const completed = todos.filter(t => t.completed).length;
-            const pending = total - completed;
-            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-            document.getElementById('totalTodos').textContent = total;
-            document.getElementById('completedCount').textContent = completed;
-            document.getElementById('pendingCount').textContent = pending;
-
-            const progressFill = document.getElementById('progressFill');
-            progressFill.style.width = `${completionRate}%`;
-            progressFill.textContent = `${completionRate}%`;
-        }
-
-        function saveTodos() {
-            localStorage.setItem('todos', JSON.stringify(todos));
-        }
-
-        // Enter key support
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const activeSection = document.querySelector('.tool-section.active');
-                if (activeSection) {
-                    const sectionId = activeSection.id;
-                    if (sectionId === 'todo-manager' && e.target.id === 'todoText') {
-                        addTodo();
-                    } else if (sectionId === 'tax-calculator') {
-                        calculateTax();
-                    } else if (sectionId === 'bmi-calculator') {
-                        calculateBMI();
-                    }
-                }
-            }
-        });
-
-        // Password Generator Functions
-        function updateLengthValue() {
-            const length = document.getElementById('passwordLength').value;
-            document.getElementById('lengthValue').textContent = length;
-        }
-
-        function generatePassword() {
-            const length = parseInt(document.getElementById('passwordLength').value);
-            const includeUppercase = document.getElementById('includeUppercase').checked;
-            const includeLowercase = document.getElementById('includeLowercase').checked;
-            const includeNumbers = document.getElementById('includeNumbers').checked;
-            const includeSymbols = document.getElementById('includeSymbols').checked;
-
-            if (!includeUppercase && !includeLowercase && !includeNumbers && !includeSymbols) {
-                alert('Vui lòng chọn ít nhất một loại ký tự!');
-                return;
-            }
-
-            let charset = '';
-            if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
-            if (includeNumbers) charset += '0123456789';
-            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-            let password = '';
-            for (let i = 0; i < length; i++) {
-                password += charset.charAt(Math.floor(Math.random() * charset.length));
-            }
-
-            document.getElementById('generatedPassword').textContent = password;
-            calculatePasswordStrength(password);
-            document.getElementById('passwordResult').classList.add('show');
-        }
-
-        function calculatePasswordStrength(password) {
-            let score = 0;
-            let crackTime = '';
-
-            // Length check
-            if (password.length >= 8) score++;
-            if (password.length >= 12) score++;
-
-            // Character variety checks
-            if (/[a-z]/.test(password)) score++;
-            if (/[A-Z]/.test(password)) score++;
-            if (/[0-9]/.test(password)) score++;
-            if (/[^A-Za-z0-9]/.test(password)) score++;
-
-            // Remove extra points if length is too short
-            if (password.length < 8) score = Math.min(score, 2);
-
-            // Calculate crack time (simplified estimation)
-            const charset = getCharsetSize(password);
-            const combinations = Math.pow(charset, password.length);
-            const secondsToCrack = combinations / (1000000000 * 2); // Assuming 1 billion guesses per second
-
-            if (secondsToCrack < 1) crackTime = '< 1 giây';
-            else if (secondsToCrack < 60) crackTime = Math.round(secondsToCrack) + ' giây';
-            else if (secondsToCrack < 3600) crackTime = Math.round(secondsToCrack / 60) + ' phút';
-            else if (secondsToCrack < 86400) crackTime = Math.round(secondsToCrack / 3600) + ' giờ';
-            else if (secondsToCrack < 31536000) crackTime = Math.round(secondsToCrack / 86400) + ' ngày';
-            else if (secondsToCrack < 31536000000) crackTime = Math.round(secondsToCrack / 31536000) + ' năm';
-            else crackTime = '> 1000 năm';
-
-            document.getElementById('strengthScore').textContent = score + '/6';
-            document.getElementById('crackTime').textContent = crackTime;
-
-            // Color coding for strength
-            const strengthElement = document.getElementById('strengthScore');
-            if (score <= 2) {
-                strengthElement.style.color = '#f56565';
-            } else if (score <= 4) {
-                strengthElement.style.color = '#ed8936';
-            } else {
-                strengthElement.style.color = '#48bb78';
-            }
-        }
-
-        function getCharsetSize(password) {
-            let size = 0;
-            if (/[a-z]/.test(password)) size += 26;
-            if (/[A-Z]/.test(password)) size += 26;
-            if (/[0-9]/.test(password)) size += 10;
-            if (/[^A-Za-z0-9]/.test(password)) size += 32;
-            return size;
-        }
-
-        function copyPassword() {
-            const password = document.getElementById('generatedPassword').textContent;
-            navigator.clipboard.writeText(password).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✅ Đã sao chép!';
-                btn.style.background = '#48bb78';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '#48bb78';
-                }, 2000);
-            });
-        }
-
-        // Unit Converter Functions
-        const lengthUnits = {
-            mm: 0.001,
-            cm: 0.01,
-            m: 1,
-            km: 1000,
-            inch: 0.0254,
-            ft: 0.3048,
-            yard: 0.9144,
-            mile: 1609.34
-        };
-
-        const weightUnits = {
-            mg: 0.000001,
-            g: 0.001,
-            kg: 1,
-            ton: 1000,
-            oz: 0.0283495,
-            lb: 0.453592
-        };
-
-        function convertLength() {
-            const value = parseFloat(document.getElementById('lengthValue').value);
-            const fromUnit = document.getElementById('lengthFrom').value;
-            const toUnit = document.getElementById('lengthTo').value;
-
-            if (isNaN(value)) {
-                alert('Vui lòng nhập giá trị hợp lệ!');
-                return;
-            }
-
-            const meters = value * lengthUnits[fromUnit];
-            const result = meters / lengthUnits[toUnit];
-
-            document.getElementById('lengthOutput').textContent = 
-                result.toLocaleString('vi-VN', { maximumFractionDigits: 6 }) + ' ' + 
-                document.getElementById('lengthTo').options[document.getElementById('lengthTo').selectedIndex].text.split(' ')[1];
-            
-            document.getElementById('lengthResult').classList.add('show');
-        }
-
-        function convertWeight() {
-            const value = parseFloat(document.getElementById('weightValue').value);
-            const fromUnit = document.getElementById('weightFrom').value;
-            const toUnit = document.getElementById('weightTo').value;
-
-            if (isNaN(value)) {
-                alert('Vui lòng nhập giá trị hợp lệ!');
-                return;
-            }
-
-            const kg = value * weightUnits[fromUnit];
-            const result = kg / weightUnits[toUnit];
-
-            document.getElementById('weightOutput').textContent = 
-                result.toLocaleString('vi-VN', { maximumFractionDigits: 6 }) + ' ' + 
-                document.getElementById('weightTo').options[document.getElementById('weightTo').selectedIndex].text.split(' ')[1];
-            
-            document.getElementById('weightResult').classList.add('show');
-        }
-
-        function convertTemperature() {
-            const value = parseFloat(document.getElementById('tempValue').value);
-            const fromUnit = document.getElementById('tempFrom').value;
-            const toUnit = document.getElementById('tempTo').value;
-
-            if (isNaN(value)) {
-                alert('Vui lòng nhập giá trị hợp lệ!');
-                return;
-            }
-
-            let celsius = value;
-            
-            // Convert to Celsius first
-            if (fromUnit === 'fahrenheit') {
-                celsius = (value - 32) * 5/9;
-            } else if (fromUnit === 'kelvin') {
-                celsius = value - 273.15;
-            }
-
-            // Convert from Celsius to target unit
-            let result = celsius;
-            let unit = '°C';
-            
-            if (toUnit === 'fahrenheit') {
-                result = celsius * 9/5 + 32;
-                unit = '°F';
-            } else if (toUnit === 'kelvin') {
-                result = celsius + 273.15;
-                unit = 'K';
-            }
-
-            document.getElementById('tempOutput').textContent = 
-                result.toLocaleString('vi-VN', { maximumFractionDigits: 2 }) + ' ' + unit;
-            
-            document.getElementById('tempResult').classList.add('show');
-        }
-
-        // QR Code Functions
-        function updateQRInputs() {
-            const type = document.getElementById('qrType').value;
-            const inputsContainer = document.getElementById('qrInputs');
-
-            let inputsHTML = '';
-            
-            switch(type) {
-                case 'text':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="qrText">Nội dung:</label>
-                            <textarea id="qrText" placeholder="Nhập văn bản cần tạo QR code..." style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 100px; resize: vertical;"></textarea>
-                        </div>
-                    `;
-                    break;
-                case 'url':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="qrText">Website URL:</label>
-                            <input type="url" id="qrText" placeholder="https://example.com" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                        </div>
-                    `;
-                    break;
-                case 'phone':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="qrText">Số điện thoại:</label>
-                            <input type="tel" id="qrText" placeholder="+84 123 456 789" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                        </div>
-                    `;
-                    break;
-                case 'email':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="qrText">Email:</label>
-                            <input type="email" id="qrText" placeholder="example@email.com" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                        </div>
-                    `;
-                    break;
-                case 'wifi':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="wifiSSID">Tên WiFi (SSID):</label>
-                            <input type="text" id="wifiSSID" placeholder="Tên mạng WiFi" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 15px;">
-                        </div>
-                        <div class="input-group">
-                            <label for="wifiPassword">Mật khẩu:</label>
-                            <input type="text" id="wifiPassword" placeholder="Mật khẩu WiFi" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 15px;">
-                        </div>
-                        <div class="input-group">
-                            <label for="wifiSecurity">Bảo mật:</label>
-                            <select id="wifiSecurity" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                                <option value="WPA">WPA/WPA2</option>
-                                <option value="WEP">WEP</option>
-                                <option value="nopass">Không mật khẩu</option>
-                            </select>
-                        </div>
-                    `;
-                    break;
-            }
-            
-            inputsContainer.innerHTML = inputsHTML;
-        }
-
-        function generateQR() {
-            const type = document.getElementById('qrType').value;
-            const size = document.getElementById('qrSize').value;
-            const color = document.getElementById('qrColor').value;
-            
-            let qrData = '';
-            
-            if (type === 'wifi') {
-                const ssid = document.getElementById('wifiSSID').value;
-                const password = document.getElementById('wifiPassword').value;
-                const security = document.getElementById('wifiSecurity').value;
-                
-                if (!ssid) {
-                    alert('Vui lòng nhập tên WiFi!');
-                    return;
-                }
-                
-                qrData = `WIFI:T:${security};S:${ssid};P:${password};;`;
-            } else {
-                qrData = document.getElementById('qrText').value;
-                
-                if (!qrData.trim()) {
-                    alert('Vui lòng nhập nội dung!');
-                    return;
-                }
-                
-                // Format data based on type
-                if (type === 'phone') {
-                    qrData = 'tel:' + qrData;
-                } else if (type === 'email') {
-                    qrData = 'mailto:' + qrData;
-                }
-            }
-
-            // Create QR code using a simple pattern (demo version)
-            createQRCode(qrData, size, color);
-            document.getElementById('qrResult').classList.add('show');
-        }
-
-        function createQRCode(data, size, color) {
-            const container = document.getElementById('qrCodeContainer');
-            
-            // Use QR.js library via CDN
-            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data)}&color=${color}&bgcolor=ffffff&format=png&ecc=M`;
-            
-            const img = document.createElement('img');
-            img.src = qrApiUrl;
-            img.style.maxWidth = '100%';
-            img.style.height = 'auto';
-            img.style.border = '1px solid #e2e8f0';
-            img.style.borderRadius = '8px';
-            img.alt = 'QR Code';
-            
-            // Add error handling
-            img.onerror = function() {
-                // Fallback: create a simple QR-like pattern
-                createFallbackQR(data, size, color, container);
-            };
-            
-            container.innerHTML = '';
-            container.appendChild(img);
-        }
-
-        function createFallbackQR(data, size, color, container) {
-            // Fallback QR code using canvas
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
-            
-            // Fill background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, size, size);
-            
-            // Create QR-like pattern
-            ctx.fillStyle = '#' + color;
-            const moduleSize = Math.floor(size / 25);
-            
-            // Create finder patterns (corners)
-            const drawFinderPattern = (x, y) => {
-                // Outer border
-                ctx.fillRect(x * moduleSize, y * moduleSize, 7 * moduleSize, 7 * moduleSize);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect((x + 1) * moduleSize, (y + 1) * moduleSize, 5 * moduleSize, 5 * moduleSize);
-                ctx.fillStyle = '#' + color;
-                ctx.fillRect((x + 2) * moduleSize, (y + 2) * moduleSize, 3 * moduleSize, 3 * moduleSize);
-            };
-            
-            // Draw finder patterns
-            drawFinderPattern(0, 0);    // Top-left
-            drawFinderPattern(18, 0);   // Top-right
-            drawFinderPattern(0, 18);   // Bottom-left
-            
-            // Create data pattern based on input
-            let hash = 0;
-            for (let i = 0; i < data.length; i++) {
-                hash = ((hash << 5) - hash + data.charCodeAt(i)) & 0xffffffff;
-            }
-            
-            // Fill data area
-            for (let i = 8; i < 17; i++) {
-                for (let j = 8; j < 17; j++) {
-                    if ((hash & (1 << ((i - 8) * 9 + (j - 8)))) !== 0) {
-                        ctx.fillRect(j * moduleSize, i * moduleSize, moduleSize, moduleSize);
-                    }
-                }
-            }
-            
-            container.innerHTML = '';
-            container.appendChild(canvas);
-        }
-
-        function downloadQR() {
-            const img = document.querySelector('#qrCodeContainer img');
-            const canvas = document.querySelector('#qrCodeContainer canvas');
-            
-            if (img) {
-                // Download from API-generated QR code
-                const link = document.createElement('a');
-                link.download = 'qrcode.png';
-                link.href = img.src;
-                link.click();
-            } else if (canvas) {
-                // Download from canvas fallback
-                const link = document.createElement('a');
-                link.download = 'qrcode.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            }
-        }
-
-        function printQR() {
-            const img = document.querySelector('#qrCodeContainer img');
-            const canvas = document.querySelector('#qrCodeContainer canvas');
-            
-            let imageSrc = '';
-            if (img) {
-                imageSrc = img.src;
-            } else if (canvas) {
-                imageSrc = canvas.toDataURL();
-            }
-            
-            if (imageSrc) {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <html>
-                        <head><title>In QR Code</title></head>
-                        <body style="text-align: center; padding: 50px;">
-                            <img src="${imageSrc}" style="max-width: 100%;">
-                        </body>
-                    </html>
-                `);
-                printWindow.document.close();
-                printWindow.print();
-            }
-        }
-
-        // Random Picker Functions
-        let randomHistory = JSON.parse(localStorage.getItem('randomHistory')) || [];
-        let randomCounter = parseInt(localStorage.getItem('randomCounter')) || 0;
-
-        function updatePickerInputs() {
-            const type = document.getElementById('pickerType').value;
-            const inputsContainer = document.getElementById('pickerInputs');
-
-            let inputsHTML = '';
-            
-            switch(type) {
-                case 'names':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="namesList">Danh sách tên (mỗi tên một dòng):</label>
-                            <textarea id="namesList" placeholder="Nguyễn Văn A&#10;Trần Thị B&#10;Lê Văn C&#10;Phạm Thị D&#10;Hoàng Văn E" style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
-                        </div>
-                    `;
-                    break;
-                case 'numbers':
-                    inputsHTML = `
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div class="input-group">
-                                <label for="minNumber">Số nhỏ nhất:</label>
-                                <input type="number" id="minNumber" placeholder="1" value="1" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                            </div>
-                            <div class="input-group">
-                                <label for="maxNumber">Số lớn nhất:</label>
-                                <input type="number" id="maxNumber" placeholder="100" value="100" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                            </div>
-                        </div>
-                    `;
-                    break;
-                case 'items':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="itemsList">Danh sách lựa chọn (mỗi mục một dòng):</label>
-                            <textarea id="itemsList" placeholder="Pizza&#10;Hamburger&#10;Phở&#10;Bún bò&#10;Cơm tấm" style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
-                        </div>
-                    `;
-                    break;
-                case 'yesno':
-                    inputsHTML = `
-                        <div style="text-align: center; padding: 30px; background: rgba(255, 255, 255, 0.8); border-radius: 15px; border: 2px solid #e2e8f0;">
-                            <h3 style="color: #2d3748; margin-bottom: 15px;">🤔 Đặt câu hỏi của bạn</h3>
-                            <p style="color: #4a5568; font-size: 1.1rem;">Hệ thống sẽ trả lời "Có" hoặc "Không" một cách ngẫu nhiên</p>
-                        </div>
-                    `;
-                    break;
-                case 'dice':
-                    inputsHTML = `
-                        <div class="input-group">
-                            <label for="diceCount">Số lượng xúc xắc:</label>
-                            <select id="diceCount" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                                <option value="1" selected>1 xúc xắc</option>
-                                <option value="2">2 xúc xắc</option>
-                                <option value="3">3 xúc xắc</option>
-                                <option value="4">4 xúc xắc</option>
-                                <option value="5">5 xúc xắc</option>
-                            </select>
-                        </div>
-                    `;
-                    break;
-            }
-            
-            inputsContainer.innerHTML = inputsHTML;
-        }
-
-        function startRandomPicker() {
-            const type = document.getElementById('pickerType').value;
-            const speed = document.getElementById('animationSpeed').value;
-            
-            let items = [];
-            let resultText = '';
-            let resultIcon = '🎉';
-            let description = '';
-
-            // Get items based on type
-            switch(type) {
-                case 'names':
-                    const namesText = document.getElementById('namesList').value.trim();
-                    if (!namesText) {
-                        alert('Vui lòng nhập danh sách tên!');
-                        return;
-                    }
-                    items = namesText.split('\n').filter(name => name.trim() !== '');
-                    break;
-                    
-                case 'numbers':
-                    const min = parseInt(document.getElementById('minNumber').value) || 1;
-                    const max = parseInt(document.getElementById('maxNumber').value) || 100;
-                    if (min >= max) {
-                        alert('Số lớn nhất phải lớn hơn số nhỏ nhất!');
-                        return;
-                    }
-                    const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-                    resultText = randomNum.toString();
-                    resultIcon = '🔢';
-                    description = `Số ngẫu nhiên từ ${min} đến ${max}`;
-                    break;
-                    
-                case 'items':
-                    const itemsText = document.getElementById('itemsList').value.trim();
-                    if (!itemsText) {
-                        alert('Vui lòng nhập danh sách lựa chọn!');
-                        return;
-                    }
-                    items = itemsText.split('\n').filter(item => item.trim() !== '');
-                    break;
-                    
-                case 'yesno':
-                    items = ['Có ✅', 'Không ❌'];
-                    resultIcon = '🤔';
-                    description = 'Câu trả lời cho câu hỏi của bạn';
-                    break;
-                    
-                case 'dice':
-                    const diceCount = parseInt(document.getElementById('diceCount').value) || 1;
-                    const diceResults = [];
-                    let total = 0;
-                    for (let i = 0; i < diceCount; i++) {
-                        const roll = Math.floor(Math.random() * 6) + 1;
-                        diceResults.push(roll);
-                        total += roll;
-                    }
-                    resultText = diceCount === 1 ? diceResults[0].toString() : `${diceResults.join(' + ')} = ${total}`;
-                    resultIcon = '🎲';
-                    description = `Kết quả ${diceCount} xúc xắc`;
-                    break;
-            }
-
-            // For list-based types, pick random item
-            if (items.length > 0) {
-                if (items.length === 1) {
-                    alert('Cần ít nhất 2 lựa chọn để random!');
-                    return;
-                }
-                const randomIndex = Math.floor(Math.random() * items.length);
-                resultText = items[randomIndex];
-                description = `Được chọn từ ${items.length} lựa chọn`;
-            }
-
-            // Show spinning animation
-            showSpinningAnimation(speed, resultText, resultIcon, description, items.length || (type === 'numbers' ? (parseInt(document.getElementById('maxNumber').value) - parseInt(document.getElementById('minNumber').value) + 1) : (type === 'dice' ? 6 : 2)));
-        }
-
-        function showSpinningAnimation(speed, finalResult, icon, description, totalItems) {
-            const spinningWheel = document.getElementById('spinningWheel');
-            const randomBtn = document.getElementById('randomBtn');
-            const resultDiv = document.getElementById('randomResult');
-
-            // Hide result and show spinning wheel
-            resultDiv.classList.remove('show');
-            spinningWheel.style.display = 'block';
-            randomBtn.disabled = true;
-            randomBtn.textContent = '🌀 Đang Random...';
-
-            // Set animation duration based on speed
-            const durations = { fast: 1500, medium: 2500, slow: 4000 };
-            const duration = durations[speed];
-
-            // Stop animation and show result
-            setTimeout(() => {
-                spinningWheel.style.display = 'none';
-                showResult(finalResult, icon, description, totalItems);
-                randomBtn.disabled = false;
-                randomBtn.textContent = '🎯 Bắt Đầu Random';
-            }, duration);
-        }
-
-        function showResult(result, icon, description, totalItems) {
-            // Update counter
-            randomCounter++;
-            localStorage.setItem('randomCounter', randomCounter.toString());
-
-            // Add to history
-            const historyItem = {
-                result: result,
-                type: document.getElementById('pickerType').options[document.getElementById('pickerType').selectedIndex].text,
-                timestamp: new Date().toLocaleString('vi-VN')
-            };
-            randomHistory.unshift(historyItem);
-            if (randomHistory.length > 20) randomHistory.pop(); // Keep only last 20
-            localStorage.setItem('randomHistory', JSON.stringify(randomHistory));
-
-            // Update display
-            const resultOutput = document.getElementById('randomOutput');
-            const resultIcon = document.getElementById('resultIcon');
-            const resultDescription = document.getElementById('resultDescription');
-
-            resultOutput.textContent = result;
-            resultOutput.className = 'result-animation rainbow-text';
-            resultIcon.textContent = icon;
-            resultDescription.textContent = description;
-
-            document.getElementById('totalItems').textContent = totalItems;
-            document.getElementById('randomCount').textContent = randomCounter;
-
-            // Show result with animation
-            document.getElementById('randomResult').classList.add('show');
-
-            // Update history display
-            updateHistoryDisplay();
-
-            // Remove animation classes after animation completes
-            setTimeout(() => {
-                resultOutput.className = '';
-            }, 3000);
-        }
-
-        function updateHistoryDisplay() {
-            const historyContainer = document.getElementById('randomHistory');
-            
-            if (randomHistory.length === 0) {
-                historyContainer.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">Chưa có lịch sử random nào</p>';
-                return;
-            }
-
-            historyContainer.innerHTML = randomHistory.map((item, index) => `
-                <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <span style="font-weight: 600; color: #2d3748; font-size: 1.1rem;">${item.result}</span>
-                        <span style="font-size: 0.8rem; color: #718096;">#${randomCounter - index}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.9rem; color: #4a5568; background: #f7fafc; padding: 3px 8px; border-radius: 4px;">${item.type}</span>
-                        <span style="font-size: 0.8rem; color: #718096;">${item.timestamp}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function clearHistory() {
-            if (randomHistory.length === 0) {
-                alert('Không có lịch sử để xóa!');
-                return;
-            }
-
-            if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử random?')) {
-                randomHistory = [];
-                localStorage.removeItem('randomHistory');
-                updateHistoryDisplay();
-            }
-        }
-
-        // Text Reader Functions
-        let currentImageFile = null;
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            const uploadArea = document.getElementById('uploadArea');
-            uploadArea.style.borderColor = '#667eea';
-            uploadArea.style.background = 'rgba(102, 126, 234, 0.1)';
-        }
-
-        function handleDragLeave(e) {
-            e.preventDefault();
-            const uploadArea = document.getElementById('uploadArea');
-            uploadArea.style.borderColor = '#cbd5e0';
-            uploadArea.style.background = 'rgba(255, 255, 255, 0.5)';
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            const uploadArea = document.getElementById('uploadArea');
-            uploadArea.style.borderColor = '#cbd5e0';
-            uploadArea.style.background = 'rgba(255, 255, 255, 0.5)';
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        }
-
-        function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        }
-
-        function handleFile(file) {
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                alert('Vui lòng chọn file hình ảnh!');
-                return;
-            }
-
-            // Validate file size (10MB)
-            if (file.size > 10 * 1024 * 1024) {
-                alert('Kích thước file không được vượt quá 10MB!');
-                return;
-            }
-
-            currentImageFile = file;
-            
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewImg = document.getElementById('previewImg');
-                previewImg.src = e.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
-                document.getElementById('textResult').classList.remove('show');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function clearImage() {
-            currentImageFile = null;
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('textResult').classList.remove('show');
-            document.getElementById('imageInput').value = '';
-        }
-
-        function processImage() {
-            if (!currentImageFile) {
-                alert('Vui lòng chọn hình ảnh trước!');
-                return;
-            }
-
-            // Show processing status
-            document.getElementById('processingStatus').style.display = 'block';
-            document.getElementById('processBtn').disabled = true;
-            document.getElementById('processBtn').textContent = '⏳ Đang xử lý...';
-
-            // Simulate OCR processing (in real app, you would use Tesseract.js or similar)
-            setTimeout(() => {
-                // This is a demo - in reality you would use OCR library
-                const demoText = `Đây là văn bản demo được trích xuất từ hình ảnh.
-
-Trong ứng dụng thực tế, chúng ta sẽ sử dụng thư viện OCR như Tesseract.js để:
-- Nhận diện văn bản từ hình ảnh
-- Hỗ trợ nhiều ngôn ngữ khác nhau
-- Xử lý các định dạng hình ảnh khác nhau
-
-Kết quả sẽ phụ thuộc vào:
-• Chất lượng hình ảnh
-• Độ rõ nét của văn bản
-• Góc chụp và ánh sáng
-• Font chữ và kích thước
-
-Hệ thống này có thể được tích hợp với:
-1. API OCR trực tuyến
-2. Thư viện JavaScript như Tesseract.js
-3. Dịch vụ AI của Google, Microsoft, AWS
-
-Lưu ý: Đây chỉ là phiên bản demo để minh họa giao diện.`;
-
-                displayExtractedText(demoText);
-                
-                // Hide processing status
-                document.getElementById('processingStatus').style.display = 'none';
-                document.getElementById('processBtn').disabled = false;
-                document.getElementById('processBtn').textContent = '🔍 Đọc Text';
-            }, 3000);
-        }
-
-        function displayExtractedText(text) {
-            document.getElementById('extractedText').value = text;
-            updateTextStats(text);
-            document.getElementById('textResult').classList.add('show');
-        }
-
-        function updateTextStats(text) {
-            const charCount = text.length;
-            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-            const lineCount = text.split('\n').length;
-
-            document.getElementById('charCount').textContent = charCount.toLocaleString();
-            document.getElementById('wordCount').textContent = wordCount.toLocaleString();
-            document.getElementById('lineCount').textContent = lineCount.toLocaleString();
-        }
-
-        function copyExtractedText() {
-            const text = document.getElementById('extractedText').value;
-            if (!text.trim()) {
-                alert('Không có văn bản để sao chép!');
-                return;
-            }
-
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✅ Đã sao chép!';
-                btn.style.background = '#48bb78';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '#4299e1';
-                }, 2000);
-            }).catch(() => {
-                alert('Không thể sao chép văn bản. Vui lòng thử lại!');
-            });
-        }
-
-        function downloadText() {
-            const text = document.getElementById('extractedText').value;
-            if (!text.trim()) {
-                alert('Không có văn bản để tải xuống!');
-                return;
-            }
-
-            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'extracted-text.txt';
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Auto-update stats when text changes
-        document.addEventListener('DOMContentLoaded', function() {
-            const extractedTextArea = document.getElementById('extractedText');
-            if (extractedTextArea) {
-                extractedTextArea.addEventListener('input', function() {
-                    updateTextStats(this.value);
-                });
-            }
-        });
-
-        // Initialize
-        renderTodos();
-        updateStats();
-        updateHistoryDisplay();
-        document.getElementById('randomCount').textContent = randomCounter;
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96765e3623e402ca',t:'MTc1Mzg5NDM2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
